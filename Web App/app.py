@@ -5,7 +5,8 @@ import os
 
 app = Flask(__name__)
 
-
+# Set the environment variable for Google Cloud service account key
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "airy-adapter-431519-f0-96dd9e4b1f19.json"
 
 # API endpoints
 description_api = (
