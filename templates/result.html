@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Transcript and Description</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Video Details</h1>
+        <div class="video-container">
+            <video id="videoPlayer" controls loop>
+                <source id="videoSource" src="{{ video_url }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+        <div class="content">
+            <div id="transcriptSection">
+                <h2>Transcript</h2>
+                <p>{{ transcript }}</p>
+            </div>
+            <div id="descriptionSection">
+                <h2>Description</h2>
+                <p>{{ description }}</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

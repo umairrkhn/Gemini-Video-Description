@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Upload</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Upload Video</h1>
+        <form id="uploadForm" enctype="multipart/form-data">
+            <input type="file" name="video" id="videoInput" accept="video/*" required>
+            <button type="submit">Upload Video</button>
+        </form>
+
+        <div id="loading" class="hidden">
+            <p>Processing video, please wait...</p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData();
+            const videoFile = document.getElementById('videoInput').files[0];
+            formData.append('video', videoFile);
+
+            document.getElementById('loading').classList.remove('hidden');
+
+            fetch('/upload_video', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    window.location.href = '/result';
+                } else {
+                    alert('Error uploading video: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
