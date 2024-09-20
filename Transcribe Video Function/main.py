@@ -18,7 +18,6 @@ def transcribe_video(request):
     config = videointelligence.SpeechTranscriptionConfig(
         language_code="en-US", 
         enable_automatic_punctuation=True,
-        enable_speaker_diarization=True,
         diarization_speaker_count=2,  # Adjust this based on expected number of speakers
     )
 
