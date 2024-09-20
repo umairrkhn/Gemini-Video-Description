@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Upload and Transcript</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Upload Video</h1>
+        <form id="uploadForm" enctype="multipart/form-data">
+            <input type="file" name="video" id="videoInput" accept="video/*" required>
+            <button type="submit">Upload Video</button>
+        </form>
+
+        <div id="videoSection" class="hidden">
+            <video id="videoPlayer" controls loop>
+                <source id="videoSource" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div id="transcriptSection">
+                <h2>Transcript</h2>
+                <p id="transcript">Fetching transcript...</p>
+            </div>
+            <div id="descriptionSection">
+                <h2>Description</h2>
+                <p id="description">Fetching description...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData();
+            const videoFile = document.getElementById('videoInput').files[0];
+            formData.append('video', videoFile);
+
+            fetch('/upload_video', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.video_url) {
+                    const videoPlayer = document.getElementById('videoPlayer');
+                    document.getElementById('videoSection').classList.remove('hidden');
+                    document.getElementById('videoSource').src = data.video_url;
+                    videoPlayer.load();
+
+                    // Update transcript and description
+                    document.getElementById('transcript').textContent = data.transcript;
+                    document.getElementById('description').textContent = data.description;
+                }
+            })
+            .catch(error => {
+                console.error('Error uploading video:', error);
+            });
+        });
+    </script>
+</body>
+</html>
