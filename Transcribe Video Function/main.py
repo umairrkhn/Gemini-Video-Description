@@ -2,6 +2,7 @@ import functions_framework
 from google.cloud import videointelligence
 from flask import jsonify, request
 
+
 @functions_framework.http
 def transcribe_video(request):
     """HTTP Cloud Function to transcribe speech from a video in GCS with each dialogue on a separate line."""
@@ -16,7 +17,7 @@ def transcribe_video(request):
     features = [videointelligence.Feature.SPEECH_TRANSCRIPTION]
 
     config = videointelligence.SpeechTranscriptionConfig(
-        language_code="en-US", 
+        language_code="en-US",
         enable_automatic_punctuation=True,
         diarization_speaker_count=2,  # Adjust this based on expected number of speakers
     )

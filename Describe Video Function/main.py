@@ -5,11 +5,9 @@ import vertexai
 from vertexai.generative_models import GenerativeModel, Part, SafetySetting
 from flask import jsonify
 
-
 # Initialize Vertex AI
 def init_vertex_ai():
     vertexai.init(project="airy-adapter-431519-f0", location="us-central1")
-
 
 # Function to generate video description
 def generate_video_description(video_uri):
@@ -29,19 +27,19 @@ def generate_video_description(video_uri):
     safety_settings = [
         SafetySetting(
             category=SafetySetting.HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-            threshold=SafetySetting.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+            threshold=SafetySetting.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE
         ),
         SafetySetting(
             category=SafetySetting.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-            threshold=SafetySetting.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+            threshold=SafetySetting.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE
         ),
         SafetySetting(
             category=SafetySetting.HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-            threshold=SafetySetting.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+            threshold=SafetySetting.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE
         ),
         SafetySetting(
             category=SafetySetting.HarmCategory.HARM_CATEGORY_HARASSMENT,
-            threshold=SafetySetting.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+            threshold=SafetySetting.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE
         ),
     ]
 
@@ -57,18 +55,17 @@ def generate_video_description(video_uri):
     video_description = "".join([response.text for response in responses])
     return video_description
 
-
 # HTTP Cloud Function to handle video upload and description generation
 @functions_framework.http
 def describe_video(request):
     # Ensure request has a file part
-    if "file" not in request.files:
+    if 'file' not in request.files:
         return jsonify({"error": "No file part in the request"}), 400
 
-    file = request.files["file"]
-
+    file = request.files['file']
+    
     # Ensure a file is provided
-    if file.filename == "":
+    if file.filename == '':
         return jsonify({"error": "No selected file"}), 400
 
     # Create a temporary file to store the uploaded video
@@ -88,16 +85,14 @@ def describe_video(request):
         description = generate_video_description(video_uri)
 
         # Return the description in JSON format
-        return jsonify({"description": description}), 200
+        return jsonify({"description": description, "video_uri": video_uri}), 200
 
     finally:
         # Clean up the temporary file
         os.remove(video_path)
 
-
 # Helper function to upload the video to a GCS bucket
 from google.cloud import storage
-
 
 def upload_to_gcs(local_path):
     # Define bucket name and file path
